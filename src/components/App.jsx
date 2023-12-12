@@ -70,7 +70,7 @@ export class App extends Component {
           total,
         }));
       } else {
-        console.log('Nothing found, try again!');
+        alert('Nothing found, try again!');
       }
     } catch (error) {
       throw error;
@@ -91,6 +91,11 @@ export class App extends Component {
               width: '100vw',
               overflowX: 'hidden',
             },
+            img: {
+              display: 'block',
+              maxWidth: '100%',
+              height: 'auto',
+            },
           }}
         />
         <Global
@@ -100,11 +105,6 @@ export class App extends Component {
             *::after {
               box-sizing: inherit;
             }
-          `}
-        />
-
-        <Global
-          styles={css`
             body {
               margin: 0;
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -114,15 +114,6 @@ export class App extends Component {
               background-color: #212121;
             }
           `}
-        />
-        <Global
-          styles={{
-            img: {
-              display: 'block',
-              maxWidth: '100%',
-              height: 'auto',
-            },
-          }}
         />
         <Container>
           <Searchbar onSubmit={this.handleSearchSubmit} />
