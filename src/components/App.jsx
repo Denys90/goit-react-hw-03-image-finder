@@ -22,21 +22,43 @@ export class App extends Component {
       // selectedImageId: null,
     };
   }
+  componentDidMount() {
+    this.loadFromLocalStorage();
+  }
+  // ===============================================>
   componentDidUpdate(_, prevState) {
     const { queryValue, page } = this.state;
     if (prevState.queryValue !== queryValue || prevState.page !== page) {
       this.fetchImg();
+
+      localStorage.setItem('appState', JSON.stringify(this.state));
     }
   }
   // ===============================================>
+  saveToLocalStorage = () => {
+    const { images, queryValue, page, total } = this.state;
+    const dataToSave = { images, queryValue, page, total };
+
+    localStorage.setItem('myData', JSON.stringify(dataToSave));
+  };
+  // ===============================================>
   handleSearchSubmit = queryValue => {
     if (this.state.queryValue !== queryValue) {
-      this.setState({ queryValue, page: 1, images: [], total: 0 });
+      this.setState(
+        { queryValue, page: 1, images: [], total: 0 },
+        this.saveToLocalStorage
+      );
     }
   };
   // ===============================================>
   handleLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }), this.fetchImg);
+    this.setState(
+      prevState => ({ page: prevState.page + 1 }),
+      () => {
+        this.fetchImg();
+        this.saveToLocalStorage();
+      }
+    );
   };
   // ===============================================>
   handleImageClick = imageUrl => {
@@ -44,7 +66,7 @@ export class App extends Component {
   };
   // ===============================================>
   handleCloseModal = () => {
-    this.setState({ showModal: false, modalImg: '' });
+    this.setState({ showModal: false, modalImg: '' }, this.saveToLocalStorage);
   };
   // ===============================================>
   fetchImg = async () => {
@@ -65,10 +87,13 @@ export class App extends Component {
             !images.some(existingImage => existingImage.id === newImage.id)
         );
 
-        this.setState(prevState => ({
-          images: [...prevState.images, ...uniqueImages],
-          total,
-        }));
+        this.setState(
+          prevState => ({
+            images: [...prevState.images, ...uniqueImages],
+            total,
+          }),
+          () => this.saveToLocalStorage()
+        );
       } else {
         alert('Nothing found, try again!');
       }
@@ -79,13 +104,21 @@ export class App extends Component {
     }
   };
   // ===============================================>
+  loadFromLocalStorage = () => {
+    const savedData = localStorage.getItem('myData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      this.setState(parsedData);
+    }
+  };
+  // ===============================================>
   render() {
     const { images, loading, showModal, modalImg } = this.state;
 
     return (
       <>
         <Global
-          styles={{
+          styles={css`
             html: {
               boxSizing: ' border-box',
               width: '100vw',
@@ -96,10 +129,7 @@ export class App extends Component {
               maxWidth: '100%',
               height: 'auto',
             },
-          }}
-        />
-        <Global
-          styles={css`
+
             *,
             *::before,
             *::after {
