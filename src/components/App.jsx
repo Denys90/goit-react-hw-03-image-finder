@@ -31,7 +31,7 @@ export class App extends Component {
     if (prevState.queryValue !== queryValue || prevState.page !== page) {
       this.fetchImg();
 
-      localStorage.setItem('appState', JSON.stringify(this.state));
+      localStorage.setItem('myData', JSON.stringify(this.state));
     }
   }
   // ===============================================>
@@ -84,7 +84,10 @@ export class App extends Component {
       if (total) {
         const uniqueImages = fetchedImages.filter(
           newImage =>
-            !images.some(existingImage => existingImage.id === newImage.id)
+            !images.some(
+              existingImage => existingImage.id === newImage.id,
+              total / 10
+            )
         );
 
         this.setState(
