@@ -84,10 +84,7 @@ export class App extends Component {
       if (total) {
         const uniqueImages = fetchedImages.filter(
           newImage =>
-            !images.some(
-              existingImage => existingImage.id === newImage.id,
-              total / 10
-            )
+            !images.some(existingImage => existingImage.id === newImage.id)
         );
 
         this.setState(
@@ -156,7 +153,7 @@ export class App extends Component {
             onImageClick={this.handleImageClick}
           />
           {loading && <Loader />}
-          {images.length > 0 && !loading && (
+          {images.length > 11 && !loading && (
             <Button onClick={this.handleLoadMore} />
           )}
           {showModal && (
