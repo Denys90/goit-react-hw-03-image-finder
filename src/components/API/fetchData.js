@@ -2,7 +2,7 @@ import axios from 'axios';
 //<------------------------------------------------------------
 async function fetchData(searchQuery, page = 1) {
   const MY_API_KEY = '40227453-3557d8d2139416ae0b447ea7a';
-  const URL = 'https://pixabay.com/api';
+  const URL = 'https://pixabay.com/api/';
   const params = {
     q: searchQuery,
     key: MY_API_KEY,
