@@ -19,11 +19,12 @@ export class App extends Component {
       loading: false,
       modalImg: '',
       showModal: false,
-      // selectedImageId: null,
+      selectedImageId: null,
     };
   }
   componentDidMount() {
-    this.loadFromLocalStorage();
+    this.fetchImg();
+    // this.loadFromLocalStorage();
   }
   // ===============================================>
   componentDidUpdate(_, prevState) {
@@ -31,16 +32,16 @@ export class App extends Component {
     if (prevState.queryValue !== queryValue || prevState.page !== page) {
       this.fetchImg();
 
-      localStorage.setItem('myData', JSON.stringify(this.state));
+      // localStorage.setItem('myData', JSON.stringify(this.state));
     }
   }
   // ===============================================>
-  saveToLocalStorage = () => {
-    const { images, queryValue, page, total } = this.state;
-    const dataToSave = { images, queryValue, page, total };
+  // saveToLocalStorage = () => {
+  //   const { images, queryValue, page, total } = this.state;
+  //   const dataToSave = { images, queryValue, page, total };
 
-    localStorage.setItem('myData', JSON.stringify(dataToSave));
-  };
+  //   localStorage.setItem('myData', JSON.stringify(dataToSave));
+  // };
   // ===============================================>
   handleSearchSubmit = queryValue => {
     if (this.state.queryValue !== queryValue) {
@@ -56,7 +57,7 @@ export class App extends Component {
       prevState => ({ page: prevState.page + 1 }),
       () => {
         this.fetchImg();
-        this.saveToLocalStorage();
+        // this.saveToLocalStorage();
       }
     );
   };
@@ -66,7 +67,7 @@ export class App extends Component {
   };
   // ===============================================>
   handleCloseModal = () => {
-    this.setState({ showModal: false, modalImg: '' }, this.saveToLocalStorage);
+    this.setState({ showModal: false, modalImg: '' });
   };
   // ===============================================>
   fetchImg = async () => {
@@ -87,13 +88,10 @@ export class App extends Component {
             !images.some(existingImage => existingImage.id === newImage.id)
         );
 
-        this.setState(
-          prevState => ({
-            images: [...prevState.images, ...uniqueImages],
-            total,
-          }),
-          () => this.saveToLocalStorage()
-        );
+        this.setState(prevState => ({
+          images: [...prevState.images, ...uniqueImages],
+          total,
+        }));
       } else {
         alert('Nothing found, try again!');
       }
@@ -104,16 +102,9 @@ export class App extends Component {
     }
   };
   // ===============================================>
-  loadFromLocalStorage = () => {
-    const savedData = localStorage.getItem('myData');
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      this.setState(parsedData);
-    }
-  };
-  // ===============================================>
   render() {
-    const { images, loading, showModal, modalImg } = this.state;
+    const { images, loading, showModal, modalImg, selectedImageId } =
+      this.state;
 
     return (
       <>
@@ -148,7 +139,7 @@ export class App extends Component {
         <Container>
           <Searchbar onSubmit={this.handleSearchSubmit} />
           <ImageGallery
-            // key={selectedImageId}
+            key={selectedImageId}
             images={images}
             onImageClick={this.handleImageClick}
           />
@@ -161,7 +152,7 @@ export class App extends Component {
               showModal={showModal}
               image={modalImg}
               onClose={this.handleCloseModal}
-              // id={selectedImageId}
+              id={selectedImageId}
             />
           )}
         </Container>
